@@ -25,7 +25,7 @@ struct MinHeap {
         } else {
             data[size] = idx;
             size++;
-            //upheap(size, weightArr);
+            upheap(size-1, weightArr);
         }
     }
 
@@ -36,26 +36,42 @@ struct MinHeap {
             cout << "Can't pop, empty heap!" << endl;
             return 0;
         }
-        int smallest = data[0];
+        int root = data[0];
         data[0] = data[size - 1];
         size--;
-        downheap(size, weightArr);
-        return smallest;
+        downheap(0, weightArr);
+        return root;
     }
 
     void upheap(int pos, int weightArr[]) {
         // TODO: swap child upward while smaller than parent
         if(size == 0) return;
 
-        upheap(leftChildIdx(pos), weightArr);
-        upheap(rightChildIdx(pos), weightArr);
+        while (pos > 0 && weightArr[pos] <= weightArr[parentIdx(pos)]) {
+            swap(data[pos], data[parentIdx(pos)]);
+            pos = parentIdx(pos);
+        }
     }
 
     void downheap(int pos, int weightArr[]) {
         // TODO: swap parent downward while larger than any child
         if(size == 0) return;
 
-
+        int left = leftChildIdx(pos);
+        int right = rightChildIdx(pos);
+        while (left < size) {
+            int smallest = left;
+            if (right < size && weightArr[right] < weightArr[smallest]) {
+                smallest = right;
+            }
+            if (weightArr[pos] < weightArr[smallest]) {
+                break;
+            }
+            swap(data[pos], data[smallest]);
+            pos = smallest;
+            left = leftChildIdx(pos);
+            right = rightChildIdx(pos);
+        }
     }
 };
 
