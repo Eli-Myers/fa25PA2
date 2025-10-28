@@ -73,6 +73,9 @@ struct MinHeap {
             right = rightChildIdx(pos);
         }
     }
+    int Size() {
+        return size;
+    }
 };
 
 #endif
