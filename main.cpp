@@ -106,13 +106,14 @@ int buildEncodingTree(int nextFree) {
     while (myHeap.Size() > 1) {
         int firstRoot = myHeap.pop(weightArr);
         int secondRoot = myHeap.pop(weightArr);
-        int newParent = firstRoot + secondRoot;
-        leftArr[newParent] = -1;
-        rightArr[newParent] = -1;
+        int newParent = nextFree++;
+        weightArr[newParent] = weightArr[firstRoot] + weightArr[secondRoot];
+        leftArr[newParent] = firstRoot;
+        rightArr[newParent] = secondRoot;
         myHeap.push(newParent, weightArr);
     }
-
-    return 0; // placeholder
+    finalRoot = myHeap.pop(weightArr);
+    return finalRoot; // placeholder
 }
 
 // Step 4: Use an STL stack to generate codes
@@ -122,6 +123,26 @@ void generateCodes(int root, string codes[]) {
     // Left edge adds '0', right edge adds '1'.
     // Record code when a leaf node is reached.
     stack<pair<int, string>> myStack;
+    myStack.push(make_pair(root, ""));
+    while (!myStack.empty()) {
+        pair<int, string> top = myStack.top();
+        myStack.pop();
+
+        int index = top.first;
+        string code = top.second;
+
+        if (leftArr[index] == -1 && rightArr[index] == -1) {
+            codes[index] = code;
+        }
+        else {
+            if (leftArr[index] != -1) {
+                myStack.push(make_pair(leftArr[index], code + '0'));
+            }
+            if (rightArr[index] != -1) {
+                myStack.push(make_pair(rightArr[index], code + '1'));
+            }
+        }
+    }
 }
 
 // Step 5: Print table and encoded message
