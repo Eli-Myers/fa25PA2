@@ -104,13 +104,15 @@ int buildEncodingTree(int nextFree) {
         myHeap.push(i, weightArr);
     }
     while (myHeap.Size() > 1) {
+        //follows steps in to-do
         int firstRoot = myHeap.pop(weightArr);
         int secondRoot = myHeap.pop(weightArr);
-        int newParent = nextFree++;
+        int newParent = nextFree;
         weightArr[newParent] = weightArr[firstRoot] + weightArr[secondRoot];
         leftArr[newParent] = firstRoot;
         rightArr[newParent] = secondRoot;
         myHeap.push(newParent, weightArr);
+        nextFree++;
     }
     finalRoot = myHeap.pop(weightArr);
     return finalRoot; // placeholder
@@ -132,9 +134,13 @@ void generateCodes(int root, string codes[]) {
         string code = top.second;
 
         if (leftArr[index] == -1 && rightArr[index] == -1) {
-            codes[index] = code;
+            //this was where my logic error happened where the chars were not updating so banana would be code a: b: and c:
+            //this gets the correct letter
+            char updateChar = charArr[index];
+            codes[updateChar - 'a'] = code;
         }
         else {
+            //going left adds 0 and right adds 1
             if (leftArr[index] != -1) {
                 myStack.push(make_pair(leftArr[index], code + '0'));
             }
